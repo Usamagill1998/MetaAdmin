@@ -50,17 +50,15 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
+      { Header: "Name", accessor: "author", width: "45%", align: "left" },
+      // { Header: "function", accessor: "function", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
+      { Header: "NFTS", accessor: "employed", align: "center" },
     ],
 
     rows: [
       {
         author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -69,11 +67,6 @@ export default function data() {
         employed: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
             23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
           </MDTypography>
         ),
       },

@@ -26,6 +26,7 @@
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
+    "@walletconnect/web3-provider": "^1.7.8",
     "antd": "^4.21.7",
     "axios": "^0.27.2",
     "chart.js": "3.4.1",
@@ -46,6 +47,8 @@
     "stylis": "4.0.13",
     "stylis-plugin-rtl": "2.1.1",
     "web-vitals": "2.1.4",
+    "web3": "^1.7.4",
+    "xhr2-cookies": "^1.1.0",
     "yup": "^0.32.11"
   },
   "scripts": {

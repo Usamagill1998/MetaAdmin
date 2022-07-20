@@ -19,7 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import { useCallback } from "react";
-
+import Web3 from "web3";
 import Checkbox from "@mui/material/Checkbox";
 import choose from "../../assets/images/choose.jpg";
 
@@ -43,9 +43,18 @@ import Select from "react-select";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
+// import { useWallet } from "use-wallet";
+//import Web3 from "web3";
+const NftAbi = require("../../abis/abi.json");
+// var provider = process.env.REACT_APP_HTTP_NODE;
+// var web3Provider = new Web3.providers.HttpProvider(provider);
+// var web3 = new Web3(web3Provider);
+// var web3 = new Web3();
+const contractAddress = process.env.REACT_APP_CONTRACTADDRESS;
+const contractAbi = NftAbi.abi;
 const options = [
-  { value: "stakNft", label: "Staking" },
-  { value: "rentNft", label: "Renting" },
+  { value: "staking", label: "Staking" },
+  { value: "renting", label: "Renting" },
 ];
 
 function Cover() {
@@ -71,7 +80,7 @@ function Cover() {
     author: "",
     isConfirmed: false,
   });
-
+  // const wallet = useWallet();
   const onDrop = useCallback((acceptedFiles) => {
     setFile(acceptedFiles[0]);
   }, []);
@@ -85,8 +94,9 @@ function Cover() {
   ));
 
   const handleMint = async () => {
-    console.log(selectedOption);
-    const userID = "dsaffa";
+    const User1 = JSON.parse(localStorage.getItem("User"));
+    console.log(User1?._id);
+    const userID = User1?._id;
     if (!userID) return;
     let formdata = new FormData();
     formdata.append("userId", userID);
@@ -96,9 +106,9 @@ function Cover() {
     // formdata.append("price", state?.price);
     formdata.append("amount_for_sale", state?.amount);
     formdata.append("status", 0);
-    formdata.append("nft_type", "staking");
+    formdata.append("nft_type", selectedOption?.value);
     server
-      .post("users/createNFT", formdata, {
+      .post("users/getIpfs", formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -112,14 +122,60 @@ function Cover() {
           author: "",
           isConfirmed: false,
         });
-        toast.success("Artwork submitted successfully.");
-        console.log(response);
+        // toast.success("Artwork submitted successfully.");
+        console.log(response.data.ipfs_url);
+        mint(amount, response.data.ipfs_url);
         // setNftImage(response?.data?.artDetail?.file)
         // setArtworkId(response?.data?.artDetail?._id)
         // setDisabled(false)
       });
   };
 
+  const mint = (amount) => {
+    //   wallet.connect();
+    console.log(contractAbi);
+    console.log(contractAddress);
+    // web3.setProvider(wallet.ethereum);
+    // web3.setProvider(wallet.ethereum);
+
+    //   const dv = new web3.eth.Contract(contractAbi, contractAddress);
+    //   dv.methods
+    //     .mint(wallet?.account, 2, amount, url)
+    //     .send({ from: wallet?.account }, async function (result) {
+    //       console.log(result);
+    //     })
+    //     .on("transactionHash", async function (hash) {
+    //       toast.success("Transaction submitted. please wait for the network to confirm");
+    //       ///users/InsertMintHash
+    //       await server
+    //         .post(
+    //           "/users/InsertMintHash",
+    //           {
+    //             artId: artworkData?._id,
+    //             hash,
+    //           },
+    //           {
+    //             headers: {
+    //               "Content-Type": "application/json",
+    //             },
+    //           }
+    //         )
+    //         .then((result) => {
+    //           props?.loader == true ? props?.setloader(false) : props?.setloader(true);
+    //           console.log(result);
+    //         });
+    //     })
+    //     .then((r) => {
+    //       toast.success("Nft minted successfully");
+    //       props?.loader1 == false ? props?.setloader1(true) : props?.setloader1(false);
+    //       console.log(r);
+    //     })
+    //     .catch((e) => {
+    //       toast.error(e?.message);
+    //       console.log(e);
+    //     });
+  };
+  mint();
   const handleChange = (e) => {
     const name = e.target.name;
     const val = e.target.value;

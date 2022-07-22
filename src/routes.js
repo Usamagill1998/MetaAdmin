@@ -93,7 +93,16 @@ const routes = [
     route: "/nfts",
     component: <NFT />,
   },
-  
+ 
+  {
+    // type: "collapse",
+    name: "nfts", 
+    key: "nfts",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/nfts",
+    component: <NFT />,
+  },
+ 
   {
     type: "collapse",
     name: "create", 

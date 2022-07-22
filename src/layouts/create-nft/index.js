@@ -37,7 +37,7 @@ import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 import { Formik } from "formik";
 import * as yup from "yup";
 import server from "../../apis/server";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import Select from "react-select";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -67,7 +67,7 @@ function Cover() {
     console.log(values);
     try {
     } catch (error) {
-      toast.error(error);
+      // toast.error(error);
     }
   };
   const [selectedOption, setSelectedOption] = useState(null);

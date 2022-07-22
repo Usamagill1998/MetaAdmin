@@ -14,8 +14,11 @@ Coded by www.creative-tim.com
 */
 
 // @mui material components
+import React,{useState,useEffect} from 'react'
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import web3 from 'web3'
+
 
 // Beta Magic React components
 import MDBox from "components/MDBox";
@@ -31,6 +34,7 @@ import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import { Space, Table, Tag } from 'antd';
+import server from '../../apis/server'
 
 import 'antd/dist/antd.css';
 // import './index.css';
@@ -43,6 +47,49 @@ function Tables() {
 
 
 
+
+  const [user,setUser] = useState([])
+  const [update,setUpdate] = useState(false)
+
+  useEffect(async() => {
+    
+      const {data} = await server.get(
+        "users/getAllUser",
+       
+        { 
+          headers: {
+            "Content-Type": "application/json",
+       },
+        } 
+      )
+      if(data)
+      {
+        if(data?.error)
+        {
+          // toast.error(data?.error)
+        }
+        else
+        {
+
+          let nft = data?.data
+           console.log('nft',nft)
+          setUser(nft)
+        let userObj = data?.data
+        // localStorage.setItem('User', JSON.stringify(userObj));
+        // console.log(userObj)
+        // navigate("/dashboard")
+        // toast.success("Login Successfull")
+      // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+      // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+      // console.log(userType)
+        }
+      }
+
+    
+  }, []);
+   
+
+
   const columns = [
     {
       title: 'Name',
@@ -51,72 +98,21 @@ function Tables() {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-  
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-  
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ];
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      render: (text) => <a>{text}</a>,
 
+    },
+    {
+      title: 'NFT',
+      dataIndex: 'nft',
+      key: 'nft',
+      render: (nft) => <a>{nft?.length}</a>,
+
+    },
+  ];
+ 
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -140,7 +136,7 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
 
-              <Table columns={columns} dataSource={data} />
+              <Table columns={columns} dataSource={user} />
                 {/* <DataTable
                   table={{ columns, rows }}
                   isSorted={false}

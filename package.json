@@ -43,12 +43,10 @@
     "react-scripts": "4.0.3",
     "react-select": "^5.4.0",
     "react-table": "7.7.0",
-    "react-toastify": "^9.0.5",
     "stylis": "4.0.13",
     "stylis-plugin-rtl": "2.1.1",
     "web-vitals": "2.1.4",
     "web3": "^1.7.4",
-    "xhr2-cookies": "^1.1.0",
     "yup": "^0.32.11"
   },
   "scripts": {

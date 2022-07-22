@@ -43,7 +43,7 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { Formik } from "formik"; 
 import * as yup from "yup";
 import server from '../../../apis/server'
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
 
 function Basic() {
@@ -72,7 +72,7 @@ function Basic() {
     {
       if(data?.error)
       {
-        toast.error(data?.error)
+        // toast.error(data?.error)
       }
       else
       {
@@ -80,7 +80,7 @@ function Basic() {
       localStorage.setItem('User', JSON.stringify(userObj));
       console.log(userObj)
       navigate("/dashboard")
-      toast.success("Login Successfull")
+      // toast.success("Login Successfull")
     // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
     // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
     // console.log(userType)

@@ -34,7 +34,7 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
-import { Space, Table, Tag } from 'antd';
+import { Button, Space, Table, Tag } from 'antd';
 import server from '../../apis/server'
 
 import 'antd/dist/antd.css';
@@ -58,7 +58,7 @@ function Tables() {
   useEffect(async() => {
     
       const {data} = await server.get(
-        "users/getAllUser",
+        "users/getAllCategories",
        
         { 
           headers: {
@@ -95,32 +95,24 @@ function Tables() {
 
 
   const columns = [
+  
     {
       title: 'Name',
-      dataIndex: ['name'],
+      dataIndex: 'name',
       key: 'name',
-      render: (text,t) => <a 
-      onClick={()=>{
-        navigate(`/nft/${t?._id}`,{
-          id :t?._id
-        });
-
-          // navigate(/nft")
-      }}
-      >{text}</a>,
+      render: (text,t) => <a>{text}</a>
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      render: (text) => <a>{text}</a>,
-
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text,t) => <a>{text}</a>
     },
     {
-      title: 'NFT',
-      dataIndex: 'nft',
-      key: 'nft',
-      render: (nft) => <a>{nft?.length}</a>,
+      title: 'Delete',
+      dataIndex: '_id',
+      key: '_id',
+      render: (nft) => <Button>Delete</Button>,
 
     },
   ];
@@ -143,7 +135,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users
+                  Categories
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

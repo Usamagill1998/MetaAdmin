@@ -35,7 +35,10 @@ import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
 import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 import server from '../../apis/server'
-
+import {
+ 
+  useParams
+} from "react-router-dom";
 
 // Overview page components
 import Header from "layouts/nfts/components/Header";
@@ -56,6 +59,7 @@ import team4 from "assets/images/team-4.jpg";
 import { Button } from '@mui/material';
 
 function Overview() {
+  const { id } = useParams();
 
   const [nft,setNfts] = useState([])
   const [update,setUpdate] = useState(false)
@@ -63,7 +67,10 @@ function Overview() {
   useEffect(async() => {
     
       const {data} = await server.post(
-        "users/getNfts",
+        "/users/getAllNftsByUserId",
+        {
+         userId:id
+        },
        
         { 
           headers: {
@@ -75,7 +82,7 @@ function Overview() {
       {
         if(data?.error)
         {
-          toast.error(data?.error)
+          // toast.error(data?.error)
         }
         else
         {

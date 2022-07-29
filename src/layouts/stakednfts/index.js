@@ -106,7 +106,6 @@ function Overview() {
     console.log(key);
   };
   
-  
   console.log('nft',nft)
 
 
@@ -117,7 +116,7 @@ function Overview() {
       <Header>
         
       <Tabs defaultActiveKey="1" onChange={onChange}>
-    <TabPane tab="Awaiting Approval" key="1">
+    <TabPane tab="Listed" key="1">
     <MDBox p={2}>
           <Grid container spacing={6}>
       
@@ -196,9 +195,6 @@ function Overview() {
           
           </Grid>
         </MDBox>
-    </TabPane>
-    <TabPane tab="Listed" key="2">
-      Content of Tab Pane 2
     </TabPane>
     <TabPane tab="Minted" key="2">
       Content of Tab Pane 2

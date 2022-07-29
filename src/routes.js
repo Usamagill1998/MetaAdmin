@@ -43,10 +43,14 @@ import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import NFT from "layouts/nfts";
+import NFTDetail from 'layouts/nft-user'
 
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-import CreateNft from "layouts/create-nft"
+import CreateNft from "layouts/create-nft";
+import StakedNFTs from 'layouts/stakednfts';
+import Category from 'layouts/category';
+import CreateCategory from 'layouts/create-category'
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -96,20 +100,46 @@ const routes = [
  
   {
     // type: "collapse",
-    name: "nfts", 
-    key: "nfts",
+    name: "nftdetail", 
+    key: "nftdetail",
     icon: <Icon fontSize="small">person</Icon>,
-    route: "/nfts",
-    component: <NFT />,
+    route: "/nft/:id",
+    component: <NFTDetail />,
   },
  
   {
     type: "collapse",
-    name: "create", 
+    name: "NFT Staking", 
+    key: "stake",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/stake",
+    component: <StakedNFTs />,
+  },
+ 
+
+  {
+    type: "collapse",
+    name: "create nft", 
     key: "create",
     route: "/createnfts",
     component: <CreateNft />,
   },
+  {
+    type: "collapse",
+    name: "categories",
+    key: "categories",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/categories",
+    component: <Category />,
+  },
+  {
+    type: "collapse",
+    name: "Create Category", 
+    key: "createcategory",
+    route: "/createcategory",
+    component: <CreateCategory />,
+  },
+  
   // {
   //   type: "collapse",
   //   name: "Billing",

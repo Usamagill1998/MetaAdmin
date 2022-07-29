@@ -14,8 +14,6 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import React,{useState,useEffect} from 'react'
-
 import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
@@ -29,6 +27,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import React, { useState } from "react";
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
@@ -52,52 +51,12 @@ const NftAbi = require("../../abis/abi.json");
 var web3 = new Web3();
 const contractAddress = process.env.REACT_APP_CONTRACTADDRESS;
 const contractAbi = NftAbi.abi;
-const nftoptions =[
-  {
-    label:"Staking",
-    value:1
-    
-  }
-]
+const options = [
+  { value: "staking", label: "Staking" },
+  { value: "renting", label: "Renting" },
+];
+
 function Cover() {
-
-   const [category,setOptions] = useState([])
-
-
-  useEffect(async() => {
-    
-    const {data} = await server.get(
-      "users/getAllCategories",
-     
-      { 
-        headers: {
-          "Content-Type": "application/json",
-     },
-      } 
-    )
-    if(data)
-    {
-      if(data?.error)
-      {
-        // toast.error(data?.error)
-      }
-      else
-      {
-
-        let nft = data?.data
-        const data2 = nft?.map(({ _id, name }) => ({ label: name, value: _id }));
-        console.log('dataaaaa',data2)
-        setOptions(data2)
-
-      }
-    }
-
-  
-}, []);
- 
-
-
-
   let validationSchema = yup.object({
     username: yup.string().required("This field is required."),
     email: yup.string().email("Invalid email").required("This field is required."),
@@ -111,15 +70,11 @@ function Cover() {
     }
   };
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedCategorey, setSelectedCategorey] = useState(null);
 
   const [file, setFile] = useState(null);
   const [state, setState] = useState({
     name: "",
-    description: "",
-    amount: 1,
-    author: "",
-    isConfirmed: false,
+  
   });
   const wallet = useWallet();
   const onDrop = useCallback((acceptedFiles) => {
@@ -172,49 +127,7 @@ function Cover() {
       });
   };
 
-  const mint = (amount, url) => {
-    wallet.connect();
-    console.log(contractAbi);
-    console.log(contractAddress);
-    web3.setProvider(wallet.ethereum);
-    const dv = new web3.eth.Contract(contractAbi, contractAddress);
-    dv.methods
-      .mint(wallet?.account, 2, amount, url)
-      .send({ from: wallet?.account }, async function (result) {
-        console.log(result);
-      })
-      .on("transactionHash", async function (hash) {
-        // toast.success("Transaction submitted. please wait for the network to confirm");
-        ///users/InsertMintHash
-        await server
-          .post(
-            "/users/InsertMintHash",
-            {
-              artId: artworkData?._id,
-              hash,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((result) => {
-            // props?.loader == true ? props?.setloader(false) : props?.setloader(true);
-            console.log(result);
-          });
-      })
-      .then((r) => {
-        // toast.success("Nft minted successfully");
-        // props?.loader1 == false ? props?.setloader1(true) : props?.setloader1(false);
-        console.log(r);
-      })
-      .catch((e) => {
-        // toast.error(e?.message);
-        console.log(e);
-      });
-  };
-
+ 
   const handleChange = (e) => {
     const name = e.target.name;
     const val = e.target.value;
@@ -231,7 +144,7 @@ function Cover() {
       <MDBox mb={2} />
 
       <Formik
-        initialValues={{ name: "", description: "", amount: 1 }}
+        initialValues={{ name: "" }}
         enableReinitialize
         // validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
@@ -260,41 +173,16 @@ function Cover() {
         </MDBox> */}
             <MDBox pt={4} mb={2} pb={3} px={3}>
               <MDBox component="form" role="form">
-                <label for="file-input">
-                  <div style={{ cursor: "pointer" }} {...getRootProps({ className: "dropzone" })}>
-                    <img
-                      src={file ? URL.createObjectURL(file) : choose}
-                      loading="lazy"
-                      width="284"
-                      sizes="(max-width: 479px) 74vw, 284px"
-                      id="NFTimage"
-                      className="image-18"
-                    />
-                  </div>
-                </label>
-
-                <MDBox mb={2}>
+              
+              <MDBox mb={2}>
                   <MDInput
                     onChange={handleChange}
-                    value={state?.name}
-                    type="text"
-                    label="Title"
+                    label="name"
                     name="name"
+                    value={state?.name}
                     onBlur={formikProps.handleBlur("name")}
-                    error={formikProps.errors.name && formikProps.touched.name ? true : false}
-                    variant="standard"
-                    fullWidth
-                  />
-                </MDBox>
-                <MDBox mb={2}>
-                  <MDInput
-                    onChange={handleChange}
-                    label="Description"
-                    name="description"
-                    value={state?.description}
-                    onBlur={formikProps.handleBlur("description")}
                     error={
-                      formikProps.errors.description && formikProps.touched.description
+                      formikProps.errors.name && formikProps.touched.name
                         ? true
                         : false
                     }
@@ -302,23 +190,7 @@ function Cover() {
                     fullWidth
                   />
                 </MDBox>
-
-                <label>Category: </label>
-
-           <Select
-  options={category}
-  defaultValue={selectedCategorey}
-  onChange={setSelectedCategorey}
-/>
-
-                <label> NFT Category: </label>
-
-                <Select
-                  options={nftoptions}
-                  defaultValue={selectedOption}
-                  onChange={setSelectedOption}
-                />
-
+              
                 <MDBox mt={4} mb={1}>
                   <MDButton
                     onClick={() => {
@@ -328,7 +200,7 @@ function Cover() {
                     color="info"
                     fullWidth
                   >
-                    Mint
+                    Create
                   </MDButton>
                 </MDBox>
               </MDBox>
@@ -339,6 +211,6 @@ function Cover() {
       {/* </CoverLayout> */}
     </DashboardLayout>
   );
-}
+                  }
 
 export default Cover;

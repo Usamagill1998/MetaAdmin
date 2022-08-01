@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -52,51 +52,36 @@ const NftAbi = require("../../abis/abi.json");
 var web3 = new Web3();
 const contractAddress = process.env.REACT_APP_CONTRACTADDRESS;
 const contractAbi = NftAbi.abi;
-const nftoptions =[
+const nftoptions = [
   {
-    label:"Staking",
-    value:1
-    
-  }
-]
+    label: "Staking",
+    value: 1,
+  },
+];
 function Cover() {
+  const [category, setOptions] = useState([]);
 
-   const [category,setOptions] = useState([])
-
-
-  useEffect(async() => {
-    
-    const {data} = await server.get(
+  useEffect(async () => {
+    const { data } = await server.get(
       "users/getAllCategories",
-     
-      { 
+
+      {
         headers: {
           "Content-Type": "application/json",
-     },
-      } 
-    )
-    if(data)
-    {
-      if(data?.error)
-      {
-        // toast.error(data?.error)
+        },
       }
-      else
-      {
-
-        let nft = data?.data
+    );
+    if (data) {
+      if (data?.error) {
+        // toast.error(data?.error)
+      } else {
+        let nft = data?.data;
         const data2 = nft?.map(({ _id, name }) => ({ label: name, value: _id }));
-        console.log('dataaaaa',data2)
-        setOptions(data2)
-
+        console.log("dataaaaa", data2);
+        setOptions(data2);
       }
     }
-
-  
-}, []);
- 
-
-
+  }, []);
 
   let validationSchema = yup.object({
     username: yup.string().required("This field is required."),
@@ -180,7 +165,7 @@ function Cover() {
     const dv = new web3.eth.Contract(contractAbi, contractAddress);
     dv.methods
       .mint(wallet?.account, 2, amount, url)
-      .send({ from: wallet?.account }, async function (result) {
+      .send({ from: wallet?.account, value: "100000000000000" }, async function (result) {
         console.log(result);
       })
       .on("transactionHash", async function (hash) {
@@ -305,11 +290,11 @@ function Cover() {
 
                 <label>Category: </label>
 
-           <Select
-  options={category}
-  defaultValue={selectedCategorey}
-  onChange={setSelectedCategorey}
-/>
+                <Select
+                  options={category}
+                  defaultValue={selectedCategorey}
+                  onChange={setSelectedCategorey}
+                />
 
                 <label> NFT Category: </label>
 

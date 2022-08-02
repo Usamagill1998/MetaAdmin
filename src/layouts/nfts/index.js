@@ -65,45 +65,51 @@ function Overview() {
   const [nft,setNfts] = useState([])
   const [update,setUpdate] = useState(false)
 
-  useEffect(async() => {
+  useEffect(() => {
     
-      const {data} = await server.post(
-        "users/getNfts",
-       
-        { 
-          headers: {
-            "Content-Type": "application/json",
-       },
-        } 
-      )
-      if(data)
-      {
-        if(data?.error)
-        {
-          toast.error(data?.error)
-        }
-        else
-        {
-
-          let nft = data?.data
-           console.log('nft',nft)
-          setNfts(nft)
-        let userObj = data?.data
-        // localStorage.setItem('User', JSON.stringify(userObj));
-        // console.log(userObj)
-        // navigate("/dashboard")
-        // toast.success("Login Successfull")
-      // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
-      // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
-      // console.log(userType)
-        }
-      }
-
+      getData(0)
     
   }, [update]);
+
+  const getData = async(status)=>{
+    const {data} = await server.post(
+      "users/getNfts",
+     
+      { 
+        headers: {
+          "Content-Type": "application/json",
+     },
+      } 
+    )
+    if(data)
+    {
+      if(data?.error)
+      {
+        toast.error(data?.error)
+      }
+      else
+      {
+
+        let nft = data?.data
+      const filteredNft =  nft?.filter((x)=>x?.status==status)
+        setNfts(filteredNft)
+      let userObj = data?.data
+      // localStorage.setItem('User', JSON.stringify(userObj));
+      // console.log(userObj)
+      // navigate("/dashboard")
+      // toast.success("Login Successfull")
+    // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+    // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+    // console.log(userType)
+      }
+    }
+
+
+  }
    
   const onChange = (key) => {
-    console.log(key);
+
+    getData(key)
   };
   
   
@@ -116,8 +122,8 @@ function Overview() {
       <MDBox mb={2} />
       <Header>
         
-      <Tabs defaultActiveKey="1" onChange={onChange}>
-    <TabPane tab="Awaiting Approval" key="1">
+      <Tabs defaultActiveKey="0" onChange={onChange}>
+    <TabPane tab="Awaiting Approval" key="0">
     <MDBox p={2}>
           <Grid container spacing={6}>
       
@@ -197,15 +203,170 @@ function Overview() {
           </Grid>
         </MDBox>
     </TabPane>
-    <TabPane tab="Listed" key="2">
-      Content of Tab Pane 2
+    
+    <TabPane tab="Minted" key="3">
+    <MDBox p={2}>
+          <Grid container spacing={6}>
+      
+
+
+
+         
+
+
+            {
+              nft?.map((x)=>{
+                return (
+                  <Grid item xs={12} md={6} xl={3}>
+                  <DefaultProjectCard
+                    image={`http://localhost:8000/api/users/nft_image/${x?.file}`}
+                    label={x?.title}
+                    // title={x?.title}
+                    description={x?.description}
+                    
+                   
+                  />
+                 
+                 {
+                 x?.status== 0 &&(
+                  <Button
+                  
+                  onClick={async()=>{
+
+                    const {data} = await server.post(
+                      "users/approveNfts",
+                        {
+                          "nftId":  x?._id
+                      
+                      },
+                     
+                      { 
+                        headers: {
+                          "Content-Type": "application/json",
+                     },
+                      } 
+                    )
+                    if(data)
+                    {
+                      if(data?.error)
+                      {
+                        toast.error(data?.error)
+                      }
+                      else
+                      {
+              
+                        let nft = data?.data
+                         console.log('nft',nft)
+                        // setNfts(nft)
+                        setUpdate(!update)
+                      let userObj = data?.data
+                      // localStorage.setItem('User', JSON.stringify(userObj));
+                      // console.log(userObj)
+                      // navigate("/dashboard")
+                      // toast.success("Login Successfull")
+                    // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+                    // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+                    // console.log(userType)
+                      }
+                    }
+                  }}
+                  >Approve NFT</Button>
+                 )
+              }
+                </Grid>
+
+                
+                )
+              })
+            }
+           
+          
+          </Grid>
+        </MDBox>
     </TabPane>
-    <TabPane tab="Minted" key="2">
-      Content of Tab Pane 2
+    <TabPane tab="Approved" key="1">
+    <MDBox p={2}>
+          <Grid container spacing={6}>
+      
+
+
+
+         
+
+
+            {
+              nft?.map((x)=>{
+                return (
+                  <Grid item xs={12} md={6} xl={3}>
+                  <DefaultProjectCard
+                    image={`http://localhost:8000/api/users/nft_image/${x?.file}`}
+                    label={x?.title}
+                    // title={x?.title}
+                    description={x?.description}
+                    
+                   
+                  />
+                 
+                 {
+                 x?.status== 0 &&(
+                  <Button
+                  
+                  onClick={async()=>{
+
+                    const {data} = await server.post(
+                      "users/approveNfts",
+                        {
+                          "nftId":  x?._id
+                      
+                      },
+                     
+                      { 
+                        headers: {
+                          "Content-Type": "application/json",
+                     },
+                      } 
+                    )
+                    if(data)
+                    {
+                      if(data?.error)
+                      {
+                        toast.error(data?.error)
+                      }
+                      else
+                      {
+              
+                        let nft = data?.data
+                         console.log('nft',nft)
+                        // setNfts(nft)
+                        setUpdate(!update)
+                      let userObj = data?.data
+                      // localStorage.setItem('User', JSON.stringify(userObj));
+                      // console.log(userObj)
+                      // navigate("/dashboard")
+                      // toast.success("Login Successfull")
+                    // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+                    // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+                    // console.log(userType)
+                      }
+                    }
+                  }}
+                  >Approve NFT</Button>
+                 )
+              }
+                </Grid>
+
+                
+                )
+              })
+            }
+           
+          
+          </Grid>
+        </MDBox>
     </TabPane>
-    {/* <TabPane tab="Tab 3" key="3">
-      Content of Tab Pane 3
-    </TabPane> */}
+
+
+
   </Tabs>
         
       </Header>

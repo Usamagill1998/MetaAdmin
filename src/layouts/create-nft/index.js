@@ -55,7 +55,7 @@ const contractAbi = NftAbi.abi;
 const nftoptions = [
   {
     label: "Staking",
-    value: 1,
+    value: "Staking",
   },
 ];
 function Cover() {
@@ -131,7 +131,7 @@ function Cover() {
     formdata.append("description", state?.description);
     // formdata.append("price", state?.price);
     formdata.append("amount_for_sale", state?.amount);
-    formdata.append("status", 0);
+    formdata.append("status", 1);
     formdata.append("nft_type", selectedOption?.value);
     server
       .post("users/getIpfs", formdata, {
@@ -149,15 +149,15 @@ function Cover() {
           isConfirmed: false,
         });
         // toast.success("Artwork submitted successfully.");
-        console.log("response: ", response.data.ipfs_url);
-        mint(state.amount, response.data.ipfs_url);
+        console.log("response: ", response.data);
+        mint(state.amount, response.data.ipfs_url,response.data.data._id);
         // setNftImage(response?.data?.artDetail?.file)
         // setArtworkId(response?.data?.artDetail?._id)
         // setDisabled(false)
       });
   };
 
-  const mint = (amount, url) => {
+  const mint = (amount, url,artId) => {
     wallet.connect();
     console.log(contractAbi);
     console.log(contractAddress);
@@ -175,7 +175,7 @@ function Cover() {
           .post(
             "/users/InsertMintHash",
             {
-              artId: artworkData?._id,
+              artId,
               hash,
             },
             {
@@ -293,7 +293,7 @@ function Cover() {
                 <Select
                   options={category}
                   defaultValue={selectedCategorey}
-                  onChange={setSelectedCategorey}
+                  onChange={(val)=> setSelectedCategorey(val)}
                 />
 
                 <label> NFT Category: </label>
@@ -301,17 +301,19 @@ function Cover() {
                 <Select
                   options={nftoptions}
                   defaultValue={selectedOption}
-                  onChange={setSelectedOption}
+                  onChange={(val)=> setSelectedOption(val)}
                 />
 
                 <MDBox mt={4} mb={1}>
                   <MDButton
+                  
                     onClick={() => {
                       handleMint();
                     }}
                     variant="gradient"
                     color="info"
                     fullWidth
+                    disabled ={!selectedOption && !selectedCategorey && !file && !state?.name}
                   >
                     Mint
                   </MDButton>

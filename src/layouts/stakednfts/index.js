@@ -87,7 +87,9 @@ function Overview() {
 
           let nft = data?.data
            console.log('nft',nft)
-          setNfts(nft)
+           const filteredNft =  nft?.filter((x)=>x?.status==3 && x?.nft_type == 'Staking')
+
+          setNfts(filteredNft)
         let userObj = data?.data
         // localStorage.setItem('User', JSON.stringify(userObj));
         // console.log(userObj)
@@ -116,7 +118,7 @@ function Overview() {
       <Header>
         
       <Tabs defaultActiveKey="1" onChange={onChange}>
-    <TabPane tab="Listed" key="1">
+    
     <MDBox p={2}>
           <Grid container spacing={6}>
       
@@ -140,49 +142,9 @@ function Overview() {
                   />
                  
                  {
-                 x?.status== 0 &&(
+                 x?.status== 3 &&(
                   <Button
-                  
-                  onClick={async()=>{
-
-                    const {data} = await server.post(
-                      "users/approveNfts",
-                        {
-                          "nftId":  x?._id
-                      
-                      },
-                     
-                      { 
-                        headers: {
-                          "Content-Type": "application/json",
-                     },
-                      } 
-                    )
-                    if(data)
-                    {
-                      if(data?.error)
-                      {
-                        toast.error(data?.error)
-                      }
-                      else
-                      {
-              
-                        let nft = data?.data
-                         console.log('nft',nft)
-                        // setNfts(nft)
-                        setUpdate(!update)
-                      let userObj = data?.data
-                      // localStorage.setItem('User', JSON.stringify(userObj));
-                      // console.log(userObj)
-                      // navigate("/dashboard")
-                      // toast.success("Login Successfull")
-                    // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
-                    // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
-                    // console.log(userType)
-                      }
-                    }
-                  }}
-                  >Approve NFT</Button>
+                  >List for Sale</Button>
                  )
               }
                 </Grid>
@@ -195,10 +157,7 @@ function Overview() {
           
           </Grid>
         </MDBox>
-    </TabPane>
-    <TabPane tab="Minted" key="2">
-      Content of Tab Pane 2
-    </TabPane>
+    
     {/* <TabPane tab="Tab 3" key="3">
       Content of Tab Pane 3
     </TabPane> */}

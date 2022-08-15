@@ -43,14 +43,17 @@ import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import NFT from "layouts/nfts";
-import NFTDetail from 'layouts/nft-user'
+import NFTDetail from "layouts/nft-user";
 
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import CreateNft from "layouts/create-nft";
-import StakedNFTs from 'layouts/stakednfts';
-import Category from 'layouts/category';
-import CreateCategory from 'layouts/create-category'
+import StakedNFTs from "layouts/stakednfts";
+import Category from "layouts/category";
+import CreateCategory from "layouts/create-category";
+import TokenPool from "layouts/tokenpool";
+import Locked from "layouts/locked";
+import Flexible from "layouts/flexible";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -64,7 +67,7 @@ const routes = [
     route: "/authentication/sign-up",
     component: <SignUp />,
   },
- 
+
   {
     // type: "collapse",
     name: "Sign In",
@@ -91,38 +94,64 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "nfts", 
+    name: "nfts",
     key: "nfts",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/nfts",
     component: <NFT />,
   },
- 
+
   {
     // type: "collapse",
-    name: "nftdetail", 
+    name: "nftdetail",
     key: "nftdetail",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/nft/:id",
     component: <NFTDetail />,
   },
- 
+
   {
     type: "collapse",
-    name: "NFT Staking", 
+    name: "NFT Staking",
     key: "stake",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/stake",
     component: <StakedNFTs />,
   },
- 
 
   {
     type: "collapse",
-    name: "create nft", 
+    name: "create nft",
     key: "create",
+    icon: <Icon fontSize="small">person</Icon>,
     route: "/createnfts",
     component: <CreateNft />,
+  },
+  {
+    type: "collapse",
+    name: "Token Pool",
+    key: "pool",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/pool",
+    component: <TokenPool />,
+  },
+
+  {
+    type: "collapse",
+    name: "Locked",
+    key: "locked",
+
+    route: "/locked",
+    component: <Locked />,
+  },
+
+  {
+    type: "collapse",
+    name: "Flexible",
+    key: "flexible",
+
+    route: "/flexible",
+    component: <Flexible />,
   },
   {
     type: "collapse",
@@ -134,12 +163,12 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Create Category", 
+    name: "Create Category",
     key: "createcategory",
     route: "/createcategory",
     component: <CreateCategory />,
   },
-  
+
   // {
   //   type: "collapse",
   //   name: "Billing",
@@ -172,9 +201,6 @@ const routes = [
   //   route: "/profile",
   //   component: <Profile />,
   // },
-
-  
-  
 ];
 
 export default routes;

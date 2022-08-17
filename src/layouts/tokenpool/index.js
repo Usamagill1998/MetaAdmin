@@ -34,7 +34,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
-import { Formik } from "formik";
+import { Formik, setNestedObjectValues } from "formik";
 import * as yup from "yup";
 import server from "../../apis/server";
 // import { toast } from "react-toastify";
@@ -45,6 +45,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import { useWallet } from "use-wallet";
 import Web3 from "web3";
+import { getNativeSelectUtilityClasses } from "@mui/material";
 const poolAbi = require("../../abis/pool.json");
 // var provider = process.env.REACT_APP_HTTP_NODE;
 // var web3Provider = new Web3.providers.HttpProvider(provider);
@@ -61,9 +62,31 @@ function Cover() {
     burnFee: "",
   });
 
-  useEffect(async () => {}, []);
-
+  const [values, setValue] = useState({
+    bnbFee: "",
+    tokenFee: "",
+    burnFee: "",
+    unstakeFee: "",
+  });
   const wallet = useWallet();
+  useEffect(async () => {
+    setValues();
+  }, []);
+
+  const setValues = async () => {
+    wallet.connect();
+    web3.setProvider(
+      new Web3.providers.HttpProvider("https://data-seed-prebsc-1-s1.binance.org:8545")
+    );
+    const pool = new web3.eth.Contract(contractAbi, poolAddress);
+    const bnb = await pool.methods.getBnbFee().call();
+    const tokenFee = await pool.methods.getTokenFee().call();
+    const burnFee = await pool.methods.getBurnFee().call();
+    const unstakeFee = await pool.methods.getUnstakeFee().call();
+    const ethToken = web3.utils.fromWei(tokenFee, "ether");
+    const ethAmount = web3.utils.fromWei(bnb, "ether");
+    setValue({ bnbFee: ethAmount, tokenFee: ethToken, burnFee: burnFee, unstakeFee });
+  };
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -188,6 +211,14 @@ function Cover() {
       >
         {(formikProps) => (
           <>
+            <Card>
+              <MDBox pt={4} mb={2} pb={3} px={3}>
+                <h5>BNB enable fee: {values.bnbFee}</h5>
+                <h5>Token enable fee: {values.tokenFee}</h5>
+                <h5>Staking burn fee percent: {values.burnFee}%</h5>
+                <h5>Unstake fee percent: {values.unstakeFee}%</h5>
+              </MDBox>
+            </Card>
             <Card>
               <MDBox pt={4} mb={2} pb={3} px={3}>
                 <MDBox component="form" role="form">

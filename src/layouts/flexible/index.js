@@ -105,7 +105,7 @@ function Cover() {
       >
         {(formikProps) => (
           <>
-            <Card>
+            {/* <Card>
               <MDBox pt={4} mb={2} pb={3} px={3}>
                 <MDBox component="form" role="form">
                   <MDBox mb={2}>
@@ -132,7 +132,7 @@ function Cover() {
                   </MDBox>
                 </MDBox>
               </MDBox>
-            </Card>
+            </Card> */}
           </>
         )}
       </Formik>

@@ -46,13 +46,17 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useWallet } from "use-wallet";
 import Web3 from "web3";
 import { getNativeSelectUtilityClasses } from "@mui/material";
+import { token } from "stylis";
 const poolAbi = require("../../abis/pool.json");
+const tokenabi = require("../../abis/tokenAbi.json");
 // var provider = process.env.REACT_APP_HTTP_NODE;
 // var web3Provider = new Web3.providers.HttpProvider(provider);
 // var web3 = new Web3(web3Provider);
 var web3 = new Web3();
 const poolAddress = process.env.REACT_APP_POOLADDRESS;
+const tokenAddress = process.env.REACT_APP_TOKENADDRESS;
 const contractAbi = poolAbi.abi;
+const tokenAbi = tokenabi.abi;
 
 function Cover() {
   const [state, setState] = useState({
@@ -60,6 +64,7 @@ function Cover() {
     bnbFee: "",
     tokenFee: "",
     burnFee: "",
+    withdrawToken: "",
   });
 
   const [values, setValue] = useState({
@@ -67,6 +72,9 @@ function Cover() {
     tokenFee: "",
     burnFee: "",
     unstakeFee: "",
+    totalToken: "",
+    totalbnb: "",
+    minimum: "",
   });
   const wallet = useWallet();
   useEffect(async () => {
@@ -79,13 +87,32 @@ function Cover() {
       new Web3.providers.HttpProvider("https://data-seed-prebsc-1-s1.binance.org:8545")
     );
     const pool = new web3.eth.Contract(contractAbi, poolAddress);
+    const token = new web3.eth.Contract(tokenAbi, tokenAddress);
+
     const bnb = await pool.methods.getBnbFee().call();
+    console.log("bnb fee wei: ", bnb);
     const tokenFee = await pool.methods.getTokenFee().call();
     const burnFee = await pool.methods.getBurnFee().call();
     const unstakeFee = await pool.methods.getUnstakeFee().call();
     const ethToken = web3.utils.fromWei(tokenFee, "ether");
-    const ethAmount = web3.utils.fromWei(bnb, "ether");
-    setValue({ bnbFee: ethAmount, tokenFee: ethToken, burnFee: burnFee, unstakeFee });
+    const ethAmount = web3.utils.fromWei(await pool.methods.getBnbFee().call(), "ether");
+    const totalbnb = web3.utils.fromWei(await web3.eth.getBalance(poolAddress), "ether");
+    const totalToken = web3.utils.fromWei(
+      await token.methods.balanceOf(poolAddress).call(),
+      "ether"
+    );
+    const minimum = web3.utils.fromWei(await pool.methods.getMinLimit().call(), "ether");
+
+    console.log("bnb ether", ethAmount);
+    setValue({
+      bnbFee: ethAmount,
+      tokenFee: ethToken,
+      burnFee: burnFee,
+      unstakeFee,
+      totalToken,
+      totalbnb,
+      minimum,
+    });
   };
 
   const handleChange = (e) => {
@@ -181,7 +208,7 @@ function Cover() {
     const pool = new web3.eth.Contract(contractAbi, poolAddress);
     const weiAmount = web3.utils.toWei(state.minLimit, "ether");
     pool.methods
-      .setMinAmount(weiAmount)
+      .setMinLimit(weiAmount)
       .send({ from: wallet?.account }, async function (result) {
         console.log(result);
       })
@@ -195,6 +222,45 @@ function Cover() {
       });
   };
 
+  const withdrawToken = async () => {
+    wallet.connect();
+    web3.setProvider(wallet.ethereum);
+    const pool = new web3.eth.Contract(contractAbi, poolAddress);
+    const weiAmount = web3.utils.toWei(state.withdrawToken, "ether");
+    pool.methods
+      .tokenFeeWithdraw(weiAmount)
+      .send({ from: wallet?.account }, async function (result) {
+        console.log(result);
+      })
+      .on("transactionHash", async function (hash) {})
+      .then((r) => {
+        console.log(r);
+      })
+      .catch((e) => {
+        // toast.error(e?.message);
+        console.log(e);
+      });
+  };
+
+  const withdrawBnb = () => {
+    wallet.connect();
+    web3.setProvider(wallet.ethereum);
+    const pool = new web3.eth.Contract(contractAbi, poolAddress);
+
+    pool.methods
+      .bnbFeeWithdraw()
+      .send({ from: wallet?.account }, async function (result) {
+        console.log(result);
+      })
+      .on("transactionHash", async function (hash) {})
+      .then((r) => {
+        console.log(r);
+      })
+      .catch((e) => {
+        // toast.error(e?.message);
+        console.log(e);
+      });
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -217,6 +283,10 @@ function Cover() {
                 <h5>Token enable fee: {values.tokenFee}</h5>
                 <h5>Staking burn fee percent: {values.burnFee}%</h5>
                 <h5>Unstake fee percent: {values.unstakeFee}%</h5>
+                <h5>Minimum token to stake: {values.minimum}</h5>
+
+                <h5>Total tokens in contract: {values.totalToken}</h5>
+                <h5>Total Bnb in contract: {values.totalbnb}</h5>
               </MDBox>
             </Card>
             <Card>
@@ -358,6 +428,47 @@ function Cover() {
                   <MDBox mt={4} mb={1}>
                     <MDButton onClick={setMinAmount} variant="gradient" color="info" fullWidth>
                       Set Min limit
+                    </MDButton>
+                  </MDBox>
+                </MDBox>
+              </MDBox>
+            </Card>
+
+            <Card>
+              <MDBox pt={4} mb={2} pb={3} px={3}>
+                <MDBox component="form" role="form">
+                  <MDBox mb={2}>
+                    <MDInput
+                      onChange={handleChange}
+                      value={state.withdrawToken}
+                      label="Withdraw tokens from contract (Amount)"
+                      name="withdrawToken"
+                      onBlur={formikProps.handleBlur("withdrawToken")}
+                      error={
+                        formikProps.errors.description && formikProps.touched.description
+                          ? true
+                          : false
+                      }
+                      variant="standard"
+                      fullWidth
+                    />
+                  </MDBox>
+
+                  <MDBox mt={4} mb={1}>
+                    <MDButton onClick={withdrawToken} variant="gradient" color="info" fullWidth>
+                      Withdraw tokens
+                    </MDButton>
+                  </MDBox>
+                </MDBox>
+              </MDBox>
+            </Card>
+
+            <Card>
+              <MDBox pt={4} mb={2} pb={3} px={3}>
+                <MDBox component="form" role="form">
+                  <MDBox mt={4} mb={1}>
+                    <MDButton onClick={withdrawBnb} variant="gradient" color="info" fullWidth>
+                      Withdraw BNB
                     </MDButton>
                   </MDBox>
                 </MDBox>
